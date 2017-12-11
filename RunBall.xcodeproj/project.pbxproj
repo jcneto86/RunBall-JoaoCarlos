@@ -13,6 +13,7 @@
 		52FEC0B11FDE397A00AB094E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52FEC0B01FDE397A00AB094E /* Assets.xcassets */; };
 		52FEC0B41FDE397A00AB094E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52FEC0B21FDE397A00AB094E /* LaunchScreen.storyboard */; };
 		52FEC0BC1FDE3CDC00AB094E /* image_ball.png in Resources */ = {isa = PBXBuildFile; fileRef = 52FEC0BB1FDE3CDC00AB094E /* image_ball.png */; };
+		52FEC0BE1FDEDCB500AB094E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52FEC0BD1FDEDCB500AB094E /* UserDefaultsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		52FEC0B31FDE397A00AB094E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		52FEC0B51FDE397A00AB094E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52FEC0BB1FDE3CDC00AB094E /* image_ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_ball.png; sourceTree = "<group>"; };
+		52FEC0BD1FDEDCB500AB094E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 		52FEC0A81FDE397A00AB094E /* RunBall */ = {
 			isa = PBXGroup;
 			children = (
+				52FEC0BD1FDEDCB500AB094E /* UserDefaultsManager.swift */,
 				52FEC0BB1FDE3CDC00AB094E /* image_ball.png */,
 				52FEC0A91FDE397A00AB094E /* AppDelegate.swift */,
 				52FEC0AB1FDE397A00AB094E /* ViewController.swift */,
@@ -142,6 +145,7 @@
 			files = (
 				52FEC0AC1FDE397A00AB094E /* ViewController.swift in Sources */,
 				52FEC0AA1FDE397A00AB094E /* AppDelegate.swift in Sources */,
+				52FEC0BE1FDEDCB500AB094E /* UserDefaultsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
