@@ -9,7 +9,8 @@
 import UIKit
 //----------------------------------
 class ViewController: UIViewController {
-    @IBOutlet weak var manBall: UIView!
+    @IBOutlet weak var manBallImage: UIImageView!
+    @IBOutlet weak var manBallView: UIView!
     @IBOutlet weak var viewFond: UIView!
     @IBOutlet weak var bestScoreTimeLabel: UILabel!
     @IBOutlet weak var topView: UIView!
@@ -28,25 +29,21 @@ class ViewController: UIViewController {
     //----------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-        placeManBall()
+        placemanBallView()
+        contactDetector()
         launchScoreTime()
         topView.layer.zPosition = 1000
         createCircles(numberOfCircles: 15)
         addToCosAndSinArrays()
         createAndPlaceCicles()
         launchAnimation()
-        
     }
     //----------------------------------
     func createCircles(numberOfCircles: Int) {
         while balls_move.count != numberOfCircles {
             let aCircles = UIView()
-            //let randomX = Double(arc4random_uniform(UInt32(UIScreen.main.bounds.width - 18)))
-            //let randomY = Double(arc4random_uniform(UInt32(UIScreen.main.bounds.height - 18)))
-            //let randomX = Double(arc4random_uniform(UInt32(viewFond.frame.width - 18)))
-            //let randomY = Double(arc4random_uniform(UInt32(viewFond.frame.height - 18)))
-            let randomX = Double(arc4random_uniform(UInt32(375 - 30)))
-            let randomY = Double(arc4random_uniform(UInt32(667 - 30)))
+            let randomX = Double(arc4random_uniform(UInt32(UIScreen.main.bounds.width - 30)))
+            let randomY = Double(arc4random_uniform(UInt32(UIScreen.main.bounds.height - 30)))
             aCircles.frame = CGRect(x: randomX, y: randomY, width: 30, height: 30)
             aCircles.backgroundColor = .black
             aCircles.layer.cornerRadius = 15
@@ -135,8 +132,46 @@ class ViewController: UIViewController {
         scoreTimeLabel.text = "Temps: \(scoreTime)s"
     }
     //=====
-    func placeManBall() {
-        manBall.center.x = UIScreen.main.bounds.width / 2
-        manBall.center.y = UIScreen.main.bounds.height * 0.9
+    func placemanBallView() {
+        manBallView.center.x = UIScreen.main.bounds.width / 2
+        manBallView.center.y = UIScreen.main.bounds.height * 0.9
     }
+    //=====
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        let touch: UITouch = touches.first!
+        if touch.view == manBallView {
+            manBallView.center.x = touch.location(in: self.view).x
+            manBallView.center.y = touch.location(in: self.view).y
+        }
+    }
+    
+    func contactDetector() {
+        for collider in balls_move {
+            var aCircles = UIView()
+            aCircles = collider
+            if aCircles.frame.intersects(manBallView.frame) {
+                print("Ai!!!")
+            }
+        }
+    }
+    @IBAction func StopTest(_ sender: UIButton) {
+
+        if aTimer == nil {
+            manBallImage.image = #imageLiteral(resourceName: "image_ball.png")
+            placemanBallView()
+            contactDetector()
+            launchScoreTime()
+            topView.layer.zPosition = 1000
+            createCircles(numberOfCircles: 15)
+            addToCosAndSinArrays()
+            createAndPlaceCicles()
+            launchAnimation()
+        } else {
+            manBallImage.image = #imageLiteral(resourceName: "image_ball_mort.png")
+            aTimer.invalidate()
+            aTimer = nil
+        }
+    }
+    
 }
