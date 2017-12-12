@@ -9,6 +9,8 @@
 import UIKit
 //----------------------------------
 class ViewController: UIViewController {
+    @IBOutlet weak var startView: UIView!
+    @IBOutlet weak var gameOverView: UIView!
     @IBOutlet weak var manBallImage: UIImageView!
     @IBOutlet weak var manBallView: UIView!
     @IBOutlet weak var viewFond: UIView!
@@ -21,22 +23,20 @@ class ViewController: UIViewController {
     var sin = [Double]()
     //----------------------------------
     var aTimer: Timer!
+    var sTime: Timer!
     var scoreTime = 0
-    var bestScoreTime: Int!
+    var bestScoreTime = Int()
     var distance = Int(UIScreen.main.bounds.height)
     //----------------------------------
     let userDataSave = UserDefaultsManager()
     //----------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-        placemanBallView()
-        contactDetector()
-        launchScoreTime()
+        print(bestScoreTime)
+        startView.isHidden = false
+        loadUserDefaults()
         topView.layer.zPosition = 1000
-        createCircles(numberOfCircles: 15)
-        addToCosAndSinArrays()
-        createAndPlaceCicles()
-        launchAnimation()
+
     }
     //----------------------------------
     func createCircles(numberOfCircles: Int) {
@@ -89,6 +89,7 @@ class ViewController: UIViewController {
     }
     //----------------------------------
     @objc func animate() {
+        contactDetector()
         for i in 0..<balls_move.count {
             if balls_move[i].center.x < 9 {
                 var degrees = Double(arc4random_uniform(90))
@@ -120,23 +121,36 @@ class ViewController: UIViewController {
         }
         
     }
+    //----------------------------------
     func launchScoreTime() {
-        aTimer = Timer.scheduledTimer(timeInterval: 1,
+        sTime = Timer.scheduledTimer(timeInterval: 1,
                                       target: self,
                                       selector: #selector(scoreTimeCount),
                                       userInfo: nil,
                                       repeats: true)
     }
+    //----------------------------------
     @objc func scoreTimeCount() {
+        if sTime == nil {
+            if scoreTime > bestScoreTime {
+                bestScoreTime = scoreTime
+                bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
+                loadUserDefaults()
+                print(bestScoreTime)
+            }
+            scoreTime = 0
+            scoreTimeLabel.text = "Temps: \(scoreTime)s"
+        } else {
         scoreTime = scoreTime + 1
         scoreTimeLabel.text = "Temps: \(scoreTime)s"
+        }
     }
-    //=====
+    //----------------------------------
     func placemanBallView() {
         manBallView.center.x = UIScreen.main.bounds.width / 2
         manBallView.center.y = UIScreen.main.bounds.height * 0.9
     }
-    //=====
+    //----------------------------------
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         let touch: UITouch = touches.first!
@@ -145,33 +159,51 @@ class ViewController: UIViewController {
             manBallView.center.y = touch.location(in: self.view).y
         }
     }
-    
+    //----------------------------------
     func contactDetector() {
         for collider in balls_move {
-            var aCircles = UIView()
-            aCircles = collider
-            if aCircles.frame.intersects(manBallView.frame) {
-                print("Ai!!!")
+            collider.backgroundColor = .black
+            if collider.frame.intersects(manBallView.frame) {
+                collider.backgroundColor = .red
+                manBallImage.image = #imageLiteral(resourceName: "image_ball_mort.png")
+                aTimer.invalidate()
+                aTimer = nil
+                sTime.invalidate()
+                sTime = nil
+                scoreTimeCount()
+                loadUserDefaults()
+                gameOverView.isHidden = false
             }
         }
     }
-    @IBAction func StopTest(_ sender: UIButton) {
-
-        if aTimer == nil {
-            manBallImage.image = #imageLiteral(resourceName: "image_ball.png")
-            placemanBallView()
-            contactDetector()
-            launchScoreTime()
-            topView.layer.zPosition = 1000
-            createCircles(numberOfCircles: 15)
-            addToCosAndSinArrays()
-            createAndPlaceCicles()
-            launchAnimation()
-        } else {
-            manBallImage.image = #imageLiteral(resourceName: "image_ball_mort.png")
-            aTimer.invalidate()
-            aTimer = nil
+    //----------------------------------
+    @IBAction func startGame(_ sender: UIButton) {
+        cos = [Double]()
+        sin = [Double]()
+        scoreTime = 0
+        manBallImage.image = #imageLiteral(resourceName: "image_ball.png")
+        bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
+        placemanBallView()
+        addToCosAndSinArrays()
+        createCircles(numberOfCircles: 15)
+        launchAnimation()
+        launchScoreTime()
+        addToCosAndSinArrays()
+        createAndPlaceCicles()
+        contactDetector()
+        startView.isHidden = true
+        if gameOverView.isHidden == false {
+            gameOverView.isHidden = true
         }
     }
+    //----------------------------------
+    func loadUserDefaults() {
+        if userDataSave.doesKeyExist(theKey: "score") {
+            bestScoreTime = userDataSave.getValue(theKey: "score") as! Int
+        } else {
+            bestScoreTime = 0
+        }
+    }
+    //----------------------------------
     
 }
