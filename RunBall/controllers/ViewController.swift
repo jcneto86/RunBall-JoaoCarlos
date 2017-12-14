@@ -24,19 +24,17 @@ class ViewController: UIViewController {
     //----------------------------------
     var aTimer: Timer!
     var sTime: Timer!
-    var scoreTime = 0
+    var scoreTime = Int()
     var bestScoreTime = Int()
     var distance = Int(UIScreen.main.bounds.height)
     //----------------------------------
-    let userDataSave = UserDefaultsManager()
-    //----------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(bestScoreTime)
+        manegerUser()
+        printScores()
+        placemanBallView()
         startView.isHidden = false
-        loadUserDefaults()
         topView.layer.zPosition = 1000
-
     }
     //----------------------------------
     func createCircles(numberOfCircles: Int) {
@@ -122,6 +120,8 @@ class ViewController: UIViewController {
         
     }
     //----------------------------------
+    //----------------------------------
+    //----------------------------------
     func launchScoreTime() {
         sTime = Timer.scheduledTimer(timeInterval: 1,
                                       target: self,
@@ -131,20 +131,35 @@ class ViewController: UIViewController {
     }
     //----------------------------------
     @objc func scoreTimeCount() {
-        if sTime == nil {
-            if scoreTime > bestScoreTime {
-                bestScoreTime = scoreTime
-                bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
-                loadUserDefaults()
-                print(bestScoreTime)
-            }
-            scoreTime = 0
-            scoreTimeLabel.text = "Temps: \(scoreTime)s"
+        scoreTime += 1
+        printScores()
+    }
+    func recodingScore() {
+        if scoreTime >= bestScoreTime {
+            bestScoreTime = scoreTime
+            UserDefaults.standard.set(bestScoreTime, forKey: "score")
+            printScores()
+            print(scoreTime)
+            print(bestScoreTime)
         } else {
-        scoreTime = scoreTime + 1
-        scoreTimeLabel.text = "Temps: \(scoreTime)s"
+            printScores()
+        }
+        
+    }
+    //----------------------------------
+    func manegerUser() {
+        if UserDefaults.standard.object(forKey: "score") != nil {
+            bestScoreTime = UserDefaults.standard.object(forKey: "score") as! Int
+        } else {
+            bestScoreTime = Int()
         }
     }
+    func printScores() {
+        scoreTimeLabel.text = "Temps: \(scoreTime)s"
+        bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
+    }
+    //----------------------------------
+    //----------------------------------
     //----------------------------------
     func placemanBallView() {
         manBallView.center.x = UIScreen.main.bounds.width / 2
@@ -166,12 +181,13 @@ class ViewController: UIViewController {
             if collider.frame.intersects(manBallView.frame) {
                 collider.backgroundColor = .red
                 manBallImage.image = #imageLiteral(resourceName: "image_ball_mort.png")
+                recodingScore()
+                scoreTime = 0
+                printScores()
                 aTimer.invalidate()
                 aTimer = nil
                 sTime.invalidate()
                 sTime = nil
-                scoreTimeCount()
-                loadUserDefaults()
                 gameOverView.isHidden = false
             }
         }
@@ -180,7 +196,6 @@ class ViewController: UIViewController {
     @IBAction func startGame(_ sender: UIButton) {
         cos = [Double]()
         sin = [Double]()
-        scoreTime = 0
         manBallImage.image = #imageLiteral(resourceName: "image_ball.png")
         bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
         placemanBallView()
@@ -197,13 +212,4 @@ class ViewController: UIViewController {
         }
     }
     //----------------------------------
-    func loadUserDefaults() {
-        if userDataSave.doesKeyExist(theKey: "score") {
-            bestScoreTime = userDataSave.getValue(theKey: "score") as! Int
-        } else {
-            bestScoreTime = 0
-        }
-    }
-    //----------------------------------
-    
 }
