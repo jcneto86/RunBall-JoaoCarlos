@@ -37,6 +37,7 @@ class ViewController: UIViewController {
         topView.layer.zPosition = 1000
     }
     //----------------------------------
+    // Crée les balles
     func createCircles(numberOfCircles: Int) {
         while balls_move.count != numberOfCircles {
             let aCircles = UIView()
@@ -60,6 +61,7 @@ class ViewController: UIViewController {
         }
     }
     //----------------------------------
+    // Fonction qui remplir le tabeaus cos et sin
     func addToCosAndSinArrays() {
         cos = [Double]()
         sin = [Double]()
@@ -70,7 +72,8 @@ class ViewController: UIViewController {
         }
     }
     //----------------------------------
-    func createAndPlaceCicles() {
+    // Creé et positionner les balles
+    func styleAndPlaceCicles() {
         for aCircles in balls_move {
             aCircles.layer.cornerRadius = 15
             aCircles.center.x = UIScreen.main.bounds.width / 2
@@ -78,6 +81,7 @@ class ViewController: UIViewController {
         }
     }
     //----------------------------------
+    // Initialise la fonction animer () et la répéter à chaque 0.005 sec
     func launchAnimation() {
         aTimer = Timer.scheduledTimer(timeInterval: 0.005,
                                       target: self,
@@ -86,6 +90,7 @@ class ViewController: UIViewController {
                                       repeats: true)
     }
     //----------------------------------
+     // Fonctionne juste pour l'animation des balles
     @objc func animate() {
         contactDetector()
         for i in 0..<balls_move.count {
@@ -120,8 +125,7 @@ class ViewController: UIViewController {
         
     }
     //----------------------------------
-    //----------------------------------
-    //----------------------------------
+    // initialise la fonction scoreTimeCount () et la repete a chaque secunde
     func launchScoreTime() {
         sTime = Timer.scheduledTimer(timeInterval: 1,
                                       target: self,
@@ -130,10 +134,13 @@ class ViewController: UIViewController {
                                       repeats: true)
     }
     //----------------------------------
+    // fonction qui modifie le timer du jeu
     @objc func scoreTimeCount() {
         scoreTime += 1
         printScores()
     }
+    //----------------------------------
+    // vérifier registre les point du joueur
     func recodingScore() {
         if scoreTime >= bestScoreTime {
             bestScoreTime = scoreTime
@@ -147,6 +154,7 @@ class ViewController: UIViewController {
         
     }
     //----------------------------------
+    // Créer le donné pour le UserDefault
     func manegerUser() {
         if UserDefaults.standard.object(forKey: "score") != nil {
             bestScoreTime = UserDefaults.standard.object(forKey: "score") as! Int
@@ -159,13 +167,13 @@ class ViewController: UIViewController {
         bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
     }
     //----------------------------------
-    //----------------------------------
-    //----------------------------------
+    // Corrige la position du perssonage dans l'écran
     func placemanBallView() {
         manBallView.center.x = UIScreen.main.bounds.width / 2
         manBallView.center.y = UIScreen.main.bounds.height * 0.9
     }
     //----------------------------------
+     // Contrôler le déplacerment du personnage dans le jeu
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         let touch: UITouch = touches.first!
@@ -175,6 +183,7 @@ class ViewController: UIViewController {
         }
     }
     //----------------------------------
+    // fonction qui détecte les collisions et arrêter le jeu ca une collision est détectée.
     func contactDetector() {
         for collider in balls_move {
             collider.backgroundColor = .black
@@ -193,6 +202,7 @@ class ViewController: UIViewController {
         }
     }
     //----------------------------------
+    // Fonction pour initialiser le jeu
     @IBAction func startGame(_ sender: UIButton) {
         cos = [Double]()
         sin = [Double]()
@@ -200,11 +210,11 @@ class ViewController: UIViewController {
         bestScoreTimeLabel.text = "Meilleur temps: \(bestScoreTime)s"
         placemanBallView()
         addToCosAndSinArrays()
-        createCircles(numberOfCircles: 15)
+        createCircles(numberOfCircles: 10)
         launchAnimation()
         launchScoreTime()
         addToCosAndSinArrays()
-        createAndPlaceCicles()
+        styleAndPlaceCicles()
         contactDetector()
         startView.isHidden = true
         if gameOverView.isHidden == false {
